@@ -9,6 +9,7 @@ import com.equipo.tambo.repository.UserRepository;
 import com.equipo.tambo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,10 +23,31 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional
+    public UserResponse register(UserRequest request) {
+        if(userRepository.existsByUser(request.user())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya se encuentra registrado");
+        }
+
+        Role role = roleRepository.findByRoleIgnoreCase("USER").orElseThrow(() -> new IllegalStateException("No existe el rol USER en la base de datos"));
+
+        User user = new User();
+        user.setName(request.name());
+        user.setLastname(request.lastname());
+        user.setUser(request.user());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setRole(role);
+
+        User savedUser = userRepository.save(user);
+        return toResponse(savedUser);
+    }
 
     @Override
     public List<UserResponse> listUsers() {
-        return userRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
+        return userRepository.findAllByOrderByRole_RoleAscNameAsc().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Override
