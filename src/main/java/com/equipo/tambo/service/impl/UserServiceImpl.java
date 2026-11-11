@@ -32,7 +32,10 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya se encuentra registrado");
         }
 
-        Role role = roleRepository.findByRoleIgnoreCase("USER").orElseThrow(() -> new IllegalStateException("No existe el rol USER en la base de datos"));
+        Role role = roleRepository.findById(request.role()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "El rol seleccionado no existe"
+        ));
 
         User user = new User();
         user.setName(request.name());
