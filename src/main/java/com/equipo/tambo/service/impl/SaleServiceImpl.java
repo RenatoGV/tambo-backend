@@ -54,19 +54,19 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional
     public SaleResponse createSale(SaleRequest request) {
-        User user = userRepository.findById(request.getUser())
+        User user = userRepository.findById(request.user())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "No se encontró el usuario con ID " + request.getUser()
+                        "No se encontró el usuario con ID " + request.user()
                 ));
 
         Client client = null;
 
-        if(request.getClient() != null) {
-            client = clientRepository.findById(request.getClient())
+        if(request.client() != null) {
+            client = clientRepository.findById(request.client())
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.NOT_FOUND,
-                            "No se encontró el cliente con ID " + request.getClient()
+                            "No se encontró el cliente con ID " + request.client()
                     ));
         }
 
@@ -76,7 +76,7 @@ public class SaleServiceImpl implements SaleService {
         sale.setUser(user);
         sale.setDate(LocalDateTime.now());
 
-        request.getDetails().forEach(d -> saleDetailService.createSaleDetail(sale, d));
+        request.details().forEach(d -> saleDetailService.createSaleDetail(sale, d));
 
         recalculateTotal(sale);
 
@@ -88,26 +88,26 @@ public class SaleServiceImpl implements SaleService {
     public SaleResponse updateSale(Long id, SaleRequest request) {
         Sale sale = getSale(id);
 
-        User user = userRepository.findById(request.getUser())
+        User user = userRepository.findById(request.user())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "No se encontró el usuario con ID " + request.getUser()
+                        "No se encontró el usuario con ID " + request.user()
                 ));
 
         Client client = null;
 
-        if(request.getClient() != null) {
-            client = clientRepository.findById(request.getClient())
+        if(request.client() != null) {
+            client = clientRepository.findById(request.client())
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.NOT_FOUND,
-                            "No se encontró el cliente con ID " + request.getClient()
+                            "No se encontró el cliente con ID " + request.client()
                     ));
         }
 
         sale.setClient(client);
         sale.setUser(user);
 
-        saleDetailService.replaceDetails(sale, request.getDetails());
+        saleDetailService.replaceDetails(sale, request.details());
 
         recalculateTotal(sale);
 

@@ -45,16 +45,16 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public ClientResponse createClient(ClientRequest request) {
-        if (clientRepository.existsByDni(request.getDni())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El DNI " + request.getDni() + " ya está registrado.");
+        if (clientRepository.existsByDni(request.dni())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El DNI " + request.dni() + " ya está registrado.");
         }
 
         Client client = new Client();
-        client.setName(request.getName());
-        client.setLastname(request.getLastname());
-        client.setEmail(request.getEmail());
-        client.setAddress(request.getAddress());
-        client.setDni(request.getDni());
+        client.setName(request.name());
+        client.setLastname(request.lastname());
+        client.setEmail(request.email());
+        client.setAddress(request.address());
+        client.setDni(request.dni());
 
         return toResponse(clientRepository.save(client));
     }
@@ -64,15 +64,15 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse updateClient(Long id, ClientRequest request) {
         Client client = getClient(id);
 
-        if (clientRepository.existsByDniAndIdNot(request.getDni(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El DNI " + request.getDni() + " ya pertenece a otro cliente.");
+        if (clientRepository.existsByDniAndIdNot(request.dni(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El DNI " + request.dni() + " ya pertenece a otro cliente.");
         }
 
-        client.setName(request.getName());
-        client.setLastname(request.getLastname());
-        client.setEmail(request.getEmail());
-        client.setAddress(request.getAddress());
-        client.setDni(request.getDni());
+        client.setName(request.name());
+        client.setLastname(request.lastname());
+        client.setEmail(request.email());
+        client.setAddress(request.address());
+        client.setDni(request.dni());
 
         return toResponse(clientRepository.save(client));
     }

@@ -34,28 +34,28 @@ public class SaleDetailServiceImpl implements SaleDetailService {
 
     @Override
     public void createSaleDetail(Sale sale, @Valid SaleDetailRequest request) {
-        Product product = productRepository.findById(request.getProduct())
+        Product product = productRepository.findById(request.product())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "No se encontró el producto con ID " + request.getProduct()
+                        "No se encontró el producto con ID " + request.product()
                 ));
 
-        if (product.getStock() < request.getQuantity()) {
+        if (product.getStock() < request.quantity()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Stock insuficiente para '" + product.getName() + "'. Stock disponible: " + product.getStock()
             );
         }
 
-        product.setStock(product.getStock() - request.getQuantity().intValue());
+        product.setStock(product.getStock() - request.quantity().intValue());
         productRepository.save(product);
 
         SaleDetail saleDetail = new SaleDetail();
 
         saleDetail.setProduct(product);
-        saleDetail.setQuantity(request.getQuantity());
+        saleDetail.setQuantity(request.quantity());
 
-        BigDecimal subtotal = product.getCost().multiply(BigDecimal.valueOf(request.getQuantity()));
+        BigDecimal subtotal = product.getCost().multiply(BigDecimal.valueOf(request.quantity()));
         saleDetail.setSubtotal(subtotal);
 
         sale.addDetail(saleDetail);
@@ -81,18 +81,18 @@ public class SaleDetailServiceImpl implements SaleDetailService {
             );
         }
 
-        Product product = productRepository.findById(request.getProduct())
+        Product product = productRepository.findById(request.product())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "No se encontró el producto con ID " + request.getProduct()
+                        "No se encontró el producto con ID " + request.product()
                 ));
 
         saleDetail.setProduct(product);
-        saleDetail.setQuantity(request.getQuantity());
+        saleDetail.setQuantity(request.quantity());
 
         BigDecimal subtotal = saleDetail.getProduct()
                 .getCost()
-                .multiply(BigDecimal.valueOf(request.getQuantity()));
+                .multiply(BigDecimal.valueOf(request.quantity()));
 
         saleDetail.setSubtotal(subtotal);
     }

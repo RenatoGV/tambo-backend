@@ -1,28 +1,15 @@
 package com.equipo.tambo.dto;
 
 import com.equipo.tambo.entity.Category;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProductResponse {
-
-    private Long id;
-
-    private String name;
-
-    private String description;
-
-    private BigDecimal cost;
-
-    private Integer stock;
-
-    private Boolean active;
-
-    private Category category;
-}
+public record ProductResponse (
+        Long id,
+        String name,
+        String description,
+        BigDecimal cost,
+        Integer stock,
+        Boolean active,
+        Category category
+) {}

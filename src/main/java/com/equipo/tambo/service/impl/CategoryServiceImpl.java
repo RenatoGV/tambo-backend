@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request) {
         Category category = new Category();
-        category.setCategory(request.getCategory());
+        category.setCategory(request.category());
 
         return toResponse(categoryRepository.save(category));
     }
@@ -54,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
         Category category = getCategory(id);
-        category.setCategory(request.getCategory());
+        category.setCategory(request.category());
 
         return toResponse(categoryRepository.save(category));
     }

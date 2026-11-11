@@ -71,16 +71,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void applyProductRequest(Product product, ProductRequest request) {
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setCost(request.getCost());
-        product.setStock(request.getStock());
+        product.setName(request.name());
+        product.setDescription(request.description());
+        product.setCost(request.cost());
+        product.setStock(request.stock());
 
-        if (request.getActive() != null) {
-            product.setActive(request.getActive());
+        if (request.active() != null) {
+            product.setActive(request.active());
         }
 
-        product.setCategory(findCategoryOrThrow(request.getCategory()));
+        product.setCategory(findCategoryOrThrow(request.category()));
     }
 
     private Category findCategoryOrThrow(Long id) {
