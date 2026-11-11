@@ -1,5 +1,6 @@
 package com.equipo.tambo.controller;
 
+import com.equipo.tambo.dto.UpdateUserRequest;
 import com.equipo.tambo.dto.UserRequest;
 import com.equipo.tambo.dto.UserResponse;
 import com.equipo.tambo.service.UserService;
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 

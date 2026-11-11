@@ -1,5 +1,6 @@
 package com.equipo.tambo.service.impl;
 
+import com.equipo.tambo.dto.UpdateUserRequest;
 import com.equipo.tambo.dto.UserRequest;
 import com.equipo.tambo.dto.UserResponse;
 import com.equipo.tambo.entity.Role;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse updateUser(Long id, UserRequest request) {
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
         Role role = roleRepository.findById(request.role())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -84,7 +85,6 @@ public class UserServiceImpl implements UserService {
         user.setName(request.name());
         user.setLastname(request.lastname());
         user.setUser(request.user());
-        user.setPassword(request.password());
         user.setRole(role);
 
         return toResponse(userRepository.save(user));
