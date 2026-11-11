@@ -14,6 +14,7 @@ CREATE TABLE users (
     user VARCHAR(100) NOT NULL,
     password VARCHAR(100),
     role BIGINT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT uq_users_user UNIQUE (user),
     CONSTRAINT fk_users_role FOREIGN KEY (role) REFERENCES role(id)
 );
@@ -67,9 +68,9 @@ CREATE TABLE sale_detail (
 INSERT INTO role (role) VALUES ('admin'), ('user');
 
 INSERT INTO users (name, lastname, user, password, role) VALUES
-('Marcos', 'Gomez', 'mgomez', '123456', 1),
-('Carlos', 'Ramírez', 'cramirez', '123456', 2),
-('María', 'Torres', 'mtorres', '123456', 2);
+('Renato', 'Gutiérrez', 'rguti', '$2a$10$djrOBFnE7CHFLObiDst.6u1nm8X1owHWaoK293ln0wB6Oy/HaWypa', 1),
+('Carlos', 'Ramírez', 'cramirez', '$2a$10$djrOBFnE7CHFLObiDst.6u1nm8X1owHWaoK293ln0wB6Oy/HaWypa', 2),
+('María', 'Torres', 'mtorres', '$2a$10$djrOBFnE7CHFLObiDst.6u1nm8X1owHWaoK293ln0wB6Oy/HaWypa', 2);
 
 INSERT INTO clients (name, lastname, email, address, dni) VALUES
 ('Juan', 'Pérez', 'juan.perez@gmail.com', 'Av. Los Olivos 123, Lima', '72845612'),

@@ -50,7 +50,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/auth/change-password").authenticated()
                         .anyRequest().authenticated()
                 )

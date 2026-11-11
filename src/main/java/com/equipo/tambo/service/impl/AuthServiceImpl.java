@@ -23,12 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
-
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
+    private final UserRepository userRepository;
 
     @Override
     public AuthResponse login(LoginRequest request) {
@@ -46,26 +44,6 @@ public class AuthServiceImpl implements AuthService {
         } catch (AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario o contraseña incorrectos");
         }
-    }
-
-    @Transactional
-    @Override
-    public UserResponse register(RegisterRequest request) {
-        if(userRepository.existsByUser(request.user())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya se encuentra registrado");
-        }
-
-        Role role = roleRepository.findByRole("USER").orElseThrow(() -> new IllegalStateException("No existe el rol USER en la base de datos"));
-
-        User user = new User();
-        user.setName(request.name());
-        user.setLastname(request.lastname());
-        user.setUser(request.user());
-        user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(role);
-
-        User savedUser = userRepository.save(user);
-        return toUserResponse(savedUser);
     }
 
     @Override

@@ -19,6 +19,11 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
+    }
+
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.listUsers());
