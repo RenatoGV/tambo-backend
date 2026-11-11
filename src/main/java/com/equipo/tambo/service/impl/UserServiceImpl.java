@@ -67,6 +67,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserResponse changeUserStatus(Long id, boolean active) {
+        User user = getUser(id);
+        user.setActive(active);
+
+        return toResponse(user);
+    }
+
+    @Override
+    @Transactional
     public void deleteUser(Long id) {
         User user = getUser(id);
         userRepository.delete(user);
@@ -78,7 +87,8 @@ public class UserServiceImpl implements UserService {
                 user.getName(),
                 user.getLastname(),
                 user.getUser(),
-                user.getRole()
+                user.getRole(),
+                user.isActive()
         );
     }
 }

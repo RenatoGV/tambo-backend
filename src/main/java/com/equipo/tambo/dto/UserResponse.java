@@ -14,4 +14,5 @@ public class UserResponse {
     private String lastname;
     private String user;
     private Role role;
+    private boolean active;
 }
