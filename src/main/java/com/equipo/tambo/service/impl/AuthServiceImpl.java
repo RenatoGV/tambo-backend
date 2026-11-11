@@ -3,6 +3,7 @@ package com.equipo.tambo.service.impl;
 import com.equipo.tambo.dto.*;
 import com.equipo.tambo.entity.Role;
 import com.equipo.tambo.entity.User;
+import com.equipo.tambo.exception.FieldApiException;
 import com.equipo.tambo.repository.RoleRepository;
 import com.equipo.tambo.repository.UserRepository;
 import com.equipo.tambo.security.CustomUserDetails;
@@ -60,22 +61,25 @@ public class AuthServiceImpl implements AuthService {
         User user = findUserByUsername(username);
 
         if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
-            throw new ResponseStatusException(
+            throw new FieldApiException(
                     HttpStatus.BAD_REQUEST,
+                    "currentPassword",
                     "La contraseña actual es incorrecta"
             );
         }
 
         if (!request.newPassword().equals(request.confirmPassword())) {
-            throw new ResponseStatusException(
+            throw new FieldApiException(
                     HttpStatus.BAD_REQUEST,
+                    "newPassword",
                     "Las nuevas contraseñas no coinciden"
             );
         }
 
         if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
-            throw new ResponseStatusException(
+            throw new FieldApiException(
                     HttpStatus.BAD_REQUEST,
+                    "confirmPassword",
                     "La nueva contraseña debe ser diferente a la actual"
             );
         }

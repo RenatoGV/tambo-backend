@@ -4,6 +4,7 @@ import com.equipo.tambo.dto.UserRequest;
 import com.equipo.tambo.dto.UserResponse;
 import com.equipo.tambo.entity.Role;
 import com.equipo.tambo.entity.User;
+import com.equipo.tambo.exception.FieldApiException;
 import com.equipo.tambo.repository.RoleRepository;
 import com.equipo.tambo.repository.UserRepository;
 import com.equipo.tambo.service.UserService;
@@ -29,11 +30,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse register(UserRequest request) {
         if(userRepository.existsByUser(request.user())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya se encuentra registrado");
+            throw new FieldApiException(
+                    HttpStatus.CONFLICT,
+                    "user",
+                    "El usuario ya se encuentra registrado"
+            );
         }
 
-        Role role = roleRepository.findById(request.role()).orElseThrow(() -> new ResponseStatusException(
+        Role role = roleRepository.findById(request.role()).orElseThrow(() -> new FieldApiException(
                 HttpStatus.BAD_REQUEST,
+                "rol",
                 "El rol seleccionado no existe"
         ));
 
