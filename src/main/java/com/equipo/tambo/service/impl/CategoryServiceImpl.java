@@ -4,6 +4,7 @@ import com.equipo.tambo.dto.CategoryRequest;
 import com.equipo.tambo.dto.CategoryResponse;
 import com.equipo.tambo.entity.Category;
 import com.equipo.tambo.repository.CategoryRepository;
+import com.equipo.tambo.repository.ProductRepository;
 import com.equipo.tambo.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public List<CategoryResponse> listCategories() {
@@ -63,6 +65,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         Category category = getCategory(id);
+        if(productRepository.existsByCategoryId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No se puede eliminar la categoría porque tiene producto asociados"
+            );
+        }
         categoryRepository.delete(category);
     }
 

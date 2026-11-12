@@ -6,6 +6,7 @@ import com.equipo.tambo.entity.Category;
 import com.equipo.tambo.entity.Product;
 import com.equipo.tambo.repository.CategoryRepository;
 import com.equipo.tambo.repository.ProductRepository;
+import com.equipo.tambo.repository.SaleDetailRepository;
 import com.equipo.tambo.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final SaleDetailRepository saleDetailRepository;
 
     @Override
     public List<ProductResponse> listProducts() {
@@ -67,6 +69,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         Product product = getProduct(id);
+
+        if(saleDetailRepository.existsByProductId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No se puede eliminar el producto porque tiene ventas asociadas"
+            );
+        }
+
         productRepository.delete(product);
     }
 

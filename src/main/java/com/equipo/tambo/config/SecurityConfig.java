@@ -1,5 +1,7 @@
 package com.equipo.tambo.config;
 
+import com.equipo.tambo.security.CustomAccessDeniedHandler;
+import com.equipo.tambo.security.CustomAuthenticationEntryPoint;
 import com.equipo.tambo.security.CustomJwtAuthenticationConverter;
 import com.equipo.tambo.security.CustomUserDetailsService;
 import jakarta.servlet.DispatcherType;
@@ -27,6 +29,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomJwtAuthenticationConverter jwtAuthenticationConverter;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -53,8 +57,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/auth/change-password").authenticated()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 );
         return http.build();
     }

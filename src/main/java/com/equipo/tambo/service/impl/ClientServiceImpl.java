@@ -4,7 +4,9 @@ import com.equipo.tambo.dto.ClientRequest;
 import com.equipo.tambo.dto.ClientResponse;
 import com.equipo.tambo.entity.Client;
 import com.equipo.tambo.repository.ClientRepository;
+import com.equipo.tambo.repository.SaleRepository;
 import com.equipo.tambo.service.ClientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +16,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
-
     private final ClientRepository clientRepository;
-
-    public ClientServiceImpl(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+    private final SaleRepository saleRepository;
 
     @Override
     public List<ClientResponse> listClients() {
@@ -81,6 +80,14 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void deleteClient(Long id) {
         Client client = getClient(id);
+
+        if(saleRepository.existsByClientId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No se puede eliminar el cliente porque tiene ventas asociadas"
+            );
+        }
+
         clientRepository.delete(client);
     }
 
