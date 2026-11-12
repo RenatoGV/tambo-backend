@@ -6,6 +6,7 @@ import com.equipo.tambo.entity.Role;
 import com.equipo.tambo.entity.User;
 import com.equipo.tambo.exception.FieldApiException;
 import com.equipo.tambo.repository.RoleRepository;
+import com.equipo.tambo.repository.SaleRepository;
 import com.equipo.tambo.repository.UserRepository;
 import com.equipo.tambo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final SaleRepository saleRepository;
 
     @Override
     @Transactional
@@ -109,6 +112,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = getUser(id);
+
+        if(saleRepository.existsByUserId(id)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No se puede eliminar el usuario porque tiene ventas asociadas"
+            );
+        }
+
         userRepository.delete(user);
     }
 
